@@ -1,0 +1,45 @@
+//
+// dword to ansi string
+// A simple function to convert DWord to string in Ziron
+//
+function dw2str(sysword value; char* buf) {
+	uses gp_di;
+	
+	$ifdef BITS == 16:
+		push gp_si;
+		$define DW2STRREG gp_si;
+	$else
+		$define DW2STRREG gp_cx;
+	$end;
+	
+	gp_ax = value;
+	gp_di = buf;
+	gp_cx = 10;
+	
+	push gp_di
+	repeat {
+		gp_dx = 0;
+		div gp_cx
+		gp_dx += 48;
+		[gp_di] = dl;
+		gp_di += 1;
+	} until (gp_ax == 0);
+	byte[gp_di] = 0; 
+	pop DW2STRREG
+	
+	gp_ax = gp_di;
+	gp_ax -= DW2STRREG;	
+
+ 	while (DW2STRREG < gp_di) {
+		gp_di -= 1;
+		dl = [DW2STRREG];
+		dh = [gp_di];
+		[gp_di] = dl;
+		[DW2STRREG] = dh;
+		DW2STRREG += 1;
+	}
+	
+	$ifdef BITS16:
+		pop gp_si;
+	$end;	
+}
