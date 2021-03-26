@@ -1,0 +1,4 @@
+#
+# Ziron is not supported as a language, it's a A like assembly language
+# 
+*.zir linguist-language=C
